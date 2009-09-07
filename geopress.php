@@ -1237,7 +1237,7 @@ function geopress_header() {
     }
     // $scripts .= "\n".'<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>';
 
-    $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn-min.js"></script>';
+    $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.js"></script>';
     $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/geopress.js"></script>';
     return $scripts;
 }
