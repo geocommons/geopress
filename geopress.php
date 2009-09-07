@@ -425,8 +425,8 @@ function save_geo ($id, $name,$loc,$coord,$geom,$warn,$mapurl,$visible = 1,$map_
     foreach ($locations as $row) {
       if($row->coord != " ") {
         $coords = preg_split('/\s+/',$row->coord);
-        $output .= "\tvar myPoint = new LatLonPoint( $coords[0], $coords[1]);\n";
-        $output .= "\tvar marker = new Marker(myPoint);\n";
+        $output .= "\tvar myPoint = new mxn.LatLonPoint( $coords[0], $coords[1]);\n";
+        $output .= "\tvar marker = new mxn.Marker(myPoint);\n";
         $output .= "\tgeo_map$map_id.addMarkerWithData(marker,{ infoBubble: \"" . htmlentities($row->name) . "\", icon:\"$geopress_marker\", iconSize:[24,24], iconShadow:\"".$plugindir."/blank.gif\", iconShadowSize:[0,0] });\n";
       }
     }
@@ -1118,16 +1118,16 @@ function save_geo ($id, $name,$loc,$coord,$geom,$warn,$mapurl,$visible = 1,$map_
 
 		switch($map_view_type) {
 			case "hybrid":
-				return 'Mapstraction.HYBRID';
+				return 'mxn.Mapstraction.HYBRID';
 				break;
 			case "road":
-				return 'Mapstraction.ROAD';
+				return 'mxn.Mapstraction.ROAD';
 				break;
 			case "satellite":
-				return 'Mapstraction.SATELLITE';
+				return 'mxn.Mapstraction.SATELLITE';
 				break;
 			default :
-				return 'Mapstraction.HYBRID';
+				return 'mxn.Mapstraction.HYBRID';
 			break;		
 		}
   }
@@ -1215,31 +1215,31 @@ add_action('rss_item', array('GeoPress', 'rss2_item'));
 
 
 function geopress_header() {
-	$map_format = get_settings('_geopress_map_format', true);
+    $map_format = get_settings('_geopress_map_format', true);
+    $google_apikey = get_settings('_geopress_google_apikey', true);
+    $yahoo_appid = get_settings('_geopress_yahoo_appid', true);
+    $plugindir = get_bloginfo('wpurl') . "/wp-content/plugins/geopress";
+
     $scripts = "<!-- Location provided by GeoPress v".GEOPRESS_VERSION." (http://georss.org/geopress) -->";
     $scripts .= "<meta name=\"plugin\" content=\"geopress\" />";
-//	if($map_format == "yahoo" )
-//	{
-		$yahoo_appid = get_settings('_geopress_yahoo_appid', true);
-		if($yahoo_appid != "") {
-			$scripts .= "\n".'<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.4&amp;appid='. $yahoo_appid .'"></script>';
-		}
-//	}
-	if($map_format == "microsoft")
-	{
-		$scripts .= "\n".' <script src="http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js"></script>';
-	}
 
-	$google_apikey = get_settings('_geopress_google_apikey', true);
-	if($google_apikey != "") {
-		$scripts .= "\n".'<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='. $google_apikey .'" ></script>';
-	}
-	$scripts .= "\n".'<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>';
-	
-	$plugindir = get_bloginfo('wpurl') . "/wp-content/plugins/geopress";
-	$scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction.js"></script>';
-	$scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/geopress.js"></script>';
-	return $scripts;
+    if($yahoo_appid != "") {
+        $scripts .= "\n".'<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.4&amp;appid='. $yahoo_appid .'"></script>';
+        // $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.yahoo.core-min.js"></script>';        
+    }
+    if($map_format == "microsoft") {
+        $scripts .= "\n".'<script src="http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js"></script>';
+        // $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.microsoft.core-min.js"></script>';        
+    }
+    if($google_apikey != "") {
+        $scripts .= "\n".'<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='. $google_apikey .'" ></script>';
+        // $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.google.core-min.js"></script>';
+    }
+    // $scripts .= "\n".'<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>';
+
+    $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn-min.js"></script>';
+    $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/geopress.js"></script>';
+    return $scripts;
 }
 
 ///
@@ -1365,9 +1365,9 @@ function geopress_map($height = "", $width = "", $locations = -1, $unique_id, $l
   $output .= '<!-- GeoPress Map --> <script type="text/javascript">'."\n";
   $output .= " //<![CDATA[ \n";
   $output .= "var geo_map;\ngeopress_addEvent(window,'load', function() { ";
-  $output .= 'geo_map'.$map_id.' = new Mapstraction("geo_map'.$map_id.'","'. $map_format .'");'."\n";
-  $output .= 'geo_map'.$map_id.'.setCenterAndZoom(new LatLonPoint(0,0), 1);';
-//  $output .= 'var geo_bounds = new BoundingBox();'."\n";
+  $output .= 'geo_map'.$map_id.' = new mxn.Mapstraction("geo_map'.$map_id.'","'. $map_format .'");'."\n";
+  $output .= 'geo_map'.$map_id.'.setCenterAndZoom(new mxn.LatLonPoint(0,0), 1);';
+//  $output .= 'var geo_bounds = new mxn.BoundingBox();'."\n";
   $output .= 'geo_map'.$map_id.'.addControls('.GeoPress::mapstraction_map_controls().');'."\n";
   if($map_format != "openstreetmap")
   	$output .= 'geo_map'.$map_id.'.setMapType('.GeoPress::mapstraction_map_type().');'."\n";
@@ -1378,7 +1378,7 @@ function geopress_map($height = "", $width = "", $locations = -1, $unique_id, $l
   foreach ($locs as $posts) {
     $loc = $posts[0];
     $coords = split(" ",$loc->coord);
-    $output .= "i = markers.push(new Marker(new LatLonPoint($coords[0], $coords[1])));\n";
+    $output .= "i = markers.push(new mxn.Marker(new mxn.LatLonPoint($coords[0], $coords[1])));\n";
     $details = " @ <strong>". htmlentities($loc->name)."</strong><br/>";
     $url = get_bloginfo('wpurl');
     foreach($posts as $post) {
@@ -1452,8 +1452,8 @@ function geopress_map_select($height=250, $width=400, $style="float: left;") {
   $output .= '<!-- GeoPress Map --><script type="text/javascript">';
   $output .= " //<![CDATA[ \n";
   $output .= "var geo_map;\ngeopress_addEvent(window,'load', function() { \n";
-  $output .= 'geo_map = new Mapstraction("geo_map","'.$map_format.'"); ';
-  $output .= "var myPoint = new LatLonPoint(20,-20);\n";
+  $output .= 'geo_map = new mxn.Mapstraction("geo_map","'.$map_format.'"); ';
+  $output .= "var myPoint = new mxn.LatLonPoint(20,-20);\n";
   $output .= "geo_map.addControls(".GeoPress::mapstraction_map_controls(true, 'small', false, true, true).");\n";
   $output .= "geo_map.setCenterAndZoom(myPoint,1);\n";
   $output .= "geo_map.setMapType(".GeoPress::mapstraction_map_type($map_view_type).");\n";
