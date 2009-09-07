@@ -8,34 +8,34 @@ function geopress_storezoom(elem) {
 }
 // Creates a map 
 function geopress_makemap(map_id, name, lat, lon, map_format, map_type, map_controls, map_zoom, marker_icon) {
-  num_maps = geo_maps.push(new Mapstraction("geo_map" + map_id, map_format)) - 1;
-  var myPoint = new LatLonPoint(lat, lon);
+  num_maps = geo_maps.push(new mxn.Mapstraction("geo_map" + map_id, map_format)) - 1;
+  var myPoint = new mxn.LatLonPoint(lat, lon);
   if(map_controls)
   geo_maps[num_maps].addControls(map_controls);
   geo_maps[num_maps].setCenterAndZoom(myPoint, map_zoom);
   geo_maps[num_maps].setMapType(map_type);
-  var marker = new Marker(myPoint);
+  var marker = new mxn.Marker(myPoint);
   marker.setInfoBubble(name);
   geo_maps[num_maps].addMarkerWithData(marker, {icon: marker_icon, iconSize:[24,24]});
 }
 function geopress_setmap() {
-  geo_map.removeAllMarkers();
-  var myPoint = new LatLonPoint(30,-90);
+  geo_map.removeAllmxn.Markers();
+  var myPoint = new mxn.LatLonPoint(30,-90);
   geo_map.setCenterAndZoom(myPoint, 8);
-  var marker = new Marker(myPoint);
+  var marker = new mxn.Marker(myPoint);
   marker.setInfoBubble("@ Pointed");
   geo_map.addMarker(marker);
 }
 
-// @todo - make this use a Mapstraction geocoder or geocoder independent
+// @todo - make this use a mxn.Mapstraction geocoder or geocoder independent
 var geocoder = new GClientGeocoder();
 
 // addPointToMap() adds a marker at a specific point from either 
 // a geocoder response or the user clicking on the map. 
 // @todo handle drawing polylines
 function addPointToMap(point) {
-  geo_map.removeAllMarkers();
-  marker = new Marker(point);
+  geo_map.removeAllmxn.Markers();
+  marker = new mxn.Marker(point);
   geo_map.setCenterAndZoom(point,10);
   marker.setInfoBubble(point.toString());
   geo_map.addMarker(marker);
@@ -63,7 +63,7 @@ function addAddressToMap(response, element) {
     alert("Sorry, we were unable to geocode that address");
   } else {
     place = response.Placemark[0];
-    point = new LatLonPoint(place.Point.coordinates[1], place.Point.coordinates[0]);
+    point = new mxn.LatLonPoint(place.Point.coordinates[1], place.Point.coordinates[0]);
     addPointToMap(point);
     returnObjById(element).value = place.Point.coordinates[1] + ", " + place.Point.coordinates[0];
   }
@@ -86,14 +86,14 @@ function showLocation(addr, geometry) {
   // The geometry element may already have a good location
   if(geom) {
     if(matches = geom.match(/(.+),[ ]+(.+)/)) {
-      setMapPoint(new LatLonPoint(matches[1], matches[2]));
+      setMapPoint(new mxn.LatLonPoint(matches[1], matches[2]));
       return false;
     }
   }
   if(address) {
     // If the 'address' is just points, map them
     if(matches = address.match(/\[(.+),[ ]?(.+)\]/)) {
-      setMapPoint(new LatLonPoint(matches[1], matches[2]));
+      setMapPoint(new mxn.LatLonPoint(matches[1], matches[2]));
     } else {
       geocoder.getLocations(address, function(response) { addAddressToMap(response, geometry)});
     }
@@ -121,7 +121,7 @@ var gPoint;
 // setMapPoint() handles a user clicking on a map
 function setMapPoint(point) {
   //document.forms[0].addr	
-  geo_map.removeAllMarkers();
+  geo_map.removeAllmxn.Markers();
   addPointToMap(point);
 }
 function setClickPoint(point) {
@@ -130,7 +130,7 @@ function setClickPoint(point) {
   return setMapPoint(point);
 }
 function geopress_resetMap() {
-  geo_map.setCenterAndZoom(new LatLonPoint(0,0),1);
+  geo_map.setCenterAndZoom(new mxn.LatLonPoint(0,0),1);
 }
 
 // used to register onload events to the body 
@@ -213,16 +213,16 @@ function geopress_change_view() {
   var type;
   switch(type_string) {
     case "satellite":
-    type = Mapstraction.SATELLITE;
+    type = mxn.Mapstraction.SATELLITE;
     break;
     case "road":
-    type = Mapstraction.ROAD;
+    type = mxn.Mapstraction.ROAD;
     break;
     case "hybrid":
-    type = Mapstraction.HYBRID;
+    type = mxn.Mapstraction.HYBRID;
     break;
     default :
-    type = Mapstraction.HYBRID;
+    type = mxn.Mapstraction.HYBRID;
     break;
   }
   geo_map.setMapType(type);
@@ -237,23 +237,23 @@ function geopress_change_zoom() {
 }
 
 function geopress_maketravelmap(map_id, points, map_format, map_type, map_controls) {
-	var myMap = new Mapstraction("geo_map" + map_id, map_format);
+	var myMap = new mxn.Mapstraction("geo_map" + map_id, map_format);
 	num_maps = geo_maps.push() - 1;
-	//  var myPoint = new LatLonPoint(lat, lon);
+	//  var myPoint = new mxn.LatLonPoint(lat, lon);
 	if(map_controls)
 	myMap.addControls(map_controls);
-	myMap.setCenterAndZoom(new LatLonPoint(0, 0), 5);
+	myMap.setCenterAndZoom(new mxn.LatLonPoint(0, 0), 5);
 	myMap.setMapType(map_type);
 	var polyPoints = [];
 	for(p in points) {
-		var point = new LatLonPoint(points[p].lat, points[p].lng);
+		var point = new mxn.LatLonPoint(points[p].lat, points[p].lng);
 		polyPoints.push(point);
-		var marker = new Marker(point);
+		var marker = new mxn.Marker(point);
 		marker.setInfoBubble(unescape(points[p].title));
 		marker.setLabel(unescape(points[p].name));
 		myMap.addMarker(marker);
 	}
-	var polyline=new Polyline(polyPoints);
+	var polyline=new mxn.Polyline(polyPoints);
 	polyline.setWidth(3);
 	polyline.setOpacity(0.8);
 	polyline.setColor("#fa7");
