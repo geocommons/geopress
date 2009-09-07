@@ -1219,25 +1219,26 @@ function geopress_header() {
     $google_apikey = get_settings('_geopress_google_apikey', true);
     $yahoo_appid = get_settings('_geopress_yahoo_appid', true);
     $plugindir = get_bloginfo('wpurl') . "/wp-content/plugins/geopress";
-
+    $providers = array();
+    
     $scripts = "<!-- Location provided by GeoPress v".GEOPRESS_VERSION." (http://georss.org/geopress) -->";
     $scripts .= "<meta name=\"plugin\" content=\"geopress\" />";
 
     if($yahoo_appid != "") {
+        array_push($providers,"yahoo");
         $scripts .= "\n".'<script type="text/javascript" src="http://api.maps.yahoo.com/ajaxymap?v=3.4&amp;appid='. $yahoo_appid .'"></script>';
-        // $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.yahoo.core-min.js"></script>';        
     }
     if($map_format == "microsoft") {
+        array_push($providers,"microsoft");
         $scripts .= "\n".'<script src="http://dev.virtualearth.net/mapcontrol/v3/mapcontrol.js"></script>';
-        // $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.microsoft.core-min.js"></script>';        
     }
     if($google_apikey != "") {
+        array_push($providers,"google");
         $scripts .= "\n".'<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key='. $google_apikey .'" ></script>';
-        // $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.google.core-min.js"></script>';
     }
     // $scripts .= "\n".'<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>';
 
-    $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.js"></script>';
+    $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/mapstraction/mxn.js?('.implode(",",$providers).')"></script>';
     $scripts .= "\n".'<script type="text/javascript" src="'.$plugindir.'/geopress.js"></script>';
     return $scripts;
 }
