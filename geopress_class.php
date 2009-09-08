@@ -835,6 +835,15 @@ function save_geo ($id, $name,$loc,$coord,$geom,$warn,$mapurl,$visible = 1,$map_
   function wp_head() {
 		echo geopress_header();
   }
+  function geopress_scripts() {
+      $plugindir = get_bloginfo('wpurl') . "/wp-content/plugins/geopress";
+      $providers = array("google");
+      
+      wp_enqueue_script('mapstraction', ($plugindir."/mapstraction/mxn.js?(".implode(",",$providers).")"));
+      wp_enqueue_script('geopress', ($plugindir."/geopress.js"), array(), '2.8');
+      
+      return;
+  }   
  
   // If the location is queried, JOIN with the postmeta table 
   function join_clause($join) {

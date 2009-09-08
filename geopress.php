@@ -6,7 +6,7 @@ GeoPress
 Plugin Name: GeoPress 
 Plugin URI:  http://georss.org/geopress/
 Description: GeoPress adds geographic tagging of your posts and blog. You can enter an address, points on a map, upload a GPX log, or enter latitude & longitude. You can then embed Maps, location tags, and ground tracks in your site and your blog entries. Makes your feeds GeoRSS compatible and adds KML output. (http://georss.org/geopress)
-Version: 2.5-beta
+Version: 2.8
 Author: Andrew Turner & Mikel Maron
 Author URI: http://mapufacture.com
 Author URI: http://highearthorbit.com
@@ -210,7 +210,7 @@ add_action('rss_ns', array('GeoPress', 'geopress_namespace'));
 //add_action('rss_head', array('GeoPress', 'rss2_head'));
 add_action('rss_item', array('GeoPress', 'rss2_item'));
  
- 
+
 function geopress_header() {
     $map_format = get_settings('_geopress_map_format', true);
     $google_apikey = get_settings('_geopress_google_apikey', true);
@@ -325,7 +325,7 @@ function geopress_page_map($height = "", $width = "", $controls = true) {
 		$output .= implode(',' , $pointList );
 		$output .= '},';
 		$output .= '"'.GeoPress::mapstraction_map_format($geo->map_format) . '",' . GeoPress::mapstraction_map_type($geo->map_type).', '. $map_controls .')';
-		$output .= "}); </script><!-- end GeoPress Map --> ";
+		$output .= "}); </script><!-- end GeoPress Map -->";
 	}
 	return $output;
 }
@@ -459,7 +459,7 @@ function geopress_map_select($height=250, $width=400, $style="float: left;") {
   $output .= 'geo_map.addEventListener("click", function(p){ setClickPoint(p); } );';
   $output .= 'geo_map.addEventListener("zoom", function(p){ alert("Zoomed!"); } );';
  
-  $output .= "});\n // ]]> \n </script><!-- end GeoPress Map -->\n";
+  $output .= "});\n // ]]> \n </script><!-- end GeoPress Map -->";
  
   return $output;
  

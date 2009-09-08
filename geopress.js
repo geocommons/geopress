@@ -19,7 +19,7 @@ function geopress_makemap(map_id, name, lat, lon, map_format, map_type, map_cont
   geo_maps[num_maps].addMarkerWithData(marker, {icon: marker_icon, iconSize:[24,24]});
 }
 function geopress_setmap() {
-  geo_map.removeAllmxn.Markers();
+  geo_map.removeAllMarkers();
   var myPoint = new mxn.LatLonPoint(30,-90);
   geo_map.setCenterAndZoom(myPoint, 8);
   var marker = new mxn.Marker(myPoint);
@@ -34,7 +34,7 @@ var geocoder = new GClientGeocoder();
 // a geocoder response or the user clicking on the map. 
 // @todo handle drawing polylines
 function addPointToMap(point) {
-  geo_map.removeAllmxn.Markers();
+  geo_map.removeAllMarkers();
   marker = new mxn.Marker(point);
   geo_map.setCenterAndZoom(point,10);
   marker.setInfoBubble(point.toString());
@@ -121,7 +121,7 @@ var gPoint;
 // setMapPoint() handles a user clicking on a map
 function setMapPoint(point) {
   //document.forms[0].addr	
-  geo_map.removeAllmxn.Markers();
+  geo_map.removeAllMarkers();
   addPointToMap(point);
 }
 function setClickPoint(point) {
