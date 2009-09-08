@@ -1,4 +1,5 @@
 <?php
+require_once(dirname(__FILE__) . '/geopress_embed.php');
 
 class GeoPress {  
   function install() {
@@ -767,29 +768,32 @@ function save_geo ($id, $name,$loc,$coord,$geom,$warn,$mapurl,$visible = 1,$map_
   
   // Replaces INSERT_MAP with a geopress map
   function embed_map_inpost($content) { 
-    $default_add_map = get_settings('_geopress_default_add_map', true);
- 
-    // If the user explicitly wants to insert a map
-    if(preg_match_all('/INSERT_MAP/', $content, $matches) > 0) {
-      $content = preg_replace("/INSERT_MAP\((\d+),[ ]?(\d+)\)/", geopress_post_map('\1','\2'), $content);
-      $content = preg_replace("/INSERT_OVERLAY_MAP\((\d+),[ ]?(\d+),[ ]?(.+)\)/", geopress_post_map('\1','\2',true,'\3'), $content);
- 
-      $content = preg_replace("/INSERT_MAP/", geopress_post_map(), $content);
- 
+      $default_add_map = get_settings('_geopress_default_add_map', true);
+
+      // If the user explicitly wants to insert a map
+      if(preg_match_all('/INSERT_MAP/', $content, $matches) > 0) {
+          $content = preg_replace("/INSERT_MAP\((\d+),[ ]?(\d+)\)/", geopress_post_map('\1','\2'), $content);
+          $content = preg_replace("/INSERT_OVERLAY_MAP\((\d+),[ ]?(\d+),[ ]?(.+)\)/", geopress_post_map('\1','\2',true,'\3'), $content);
+
+          $content = preg_replace("/INSERT_MAP/", geopress_post_map(), $content);
+
       // This can probably be made into a single preg_replace with ? optionals - ajturner //
       } elseif (preg_match_all('/INSERT_GEOPRESS_MAP/', $content, $matches) > 0) {
-        $content = preg_replace("/INSERT_GEOPRESS_MAP\((\d+),[ ]?(\d+)\)/", geopress_map('\1','\2'), $content);
-        $content = preg_replace("/INSERT_GEOPRESS_MAP/", geopress_map(), $content);
-        // This can probably be made into a single preg_replace with ? optionals - ajturner //
+          $content = preg_replace("/INSERT_GEOPRESS_MAP\((\d+),[ ]?(\d+)\)/", geopress_map('\1','\2'), $content);
+          $content = preg_replace("/INSERT_GEOPRESS_MAP/", geopress_map(), $content);
+          // This can probably be made into a single preg_replace with ? optionals - ajturner //
       } elseif (($default_add_map == 2) || ( is_single() && ($default_add_map == 1))) {
-        // Add a map to the end of the post if "automatically add map" is enabled
-        $content .= geopress_post_map();
+          // Add a map to the end of the post if "automatically add map" is enabled
+          $content .= geopress_post_map();
+      } elseif (preg_match_all('/INSERT_GEOCOMMONS_MAP/', $content, $matches) > 0) {
+          $content = preg_replace("/INSERT_GEOCOMMONS_MAP\((\d+)\)/", GeoPressEmbed::geocommons_map('\1'), $content);
+          $content = preg_replace("/INSERT_GEOCOMMONS_MAP\((\d+),?(\d+)?,?(\d+)?\)/", GeoPressEmbed::geocommons_map('\1','\2','\3'), $content);
       }
       $content = preg_replace("/GEOPRESS_LOCATION\((.+)\)/", "", $content);
- 
+
       return $content;
-    }
- 
+  }
+
   // Replaces INSERT_COORDS or INSERT_ADDRESS with the geopress information
   function embed_data_inpost($content) { 
     $content = preg_replace("/INSERT_COORDS/", the_geo_mf(), $content);

@@ -216,7 +216,7 @@ function geopress_header() {
     $google_apikey = get_settings('_geopress_google_apikey', true);
     $yahoo_appid = get_settings('_geopress_yahoo_appid', true);
     $plugindir = get_bloginfo('wpurl') . "/wp-content/plugins/geopress";
-    $providers = array();
+    $providers = array("geocommons");
 
     $scripts = "<!-- Location provided by GeoPress v".GEOPRESS_VERSION." (http://georss.org/geopress) -->";
     $scripts .= "<meta name=\"plugin\" content=\"geopress\" />";
@@ -272,12 +272,12 @@ function dump_locations ($locations, $msg = "") {
 // $height, $width are the h/w in pixels of the map
 // $locations is the last N locations to put on the map, be default puts *all* locations
 // $unique_id is a true/false if a unique_id is required
-function geopress_map_loop($height = "", $width = "", $locations = -1, $zoom_level = -1) {
+function geopress_map_loop($width = "", $height = "", $locations = -1, $zoom_level = -1) {
 	return geopress_map ($height, $width, $locations, false, true, $zoom_level);
 }
  
  
-function geopress_page_map($height = "", $width = "", $controls = true) {
+function geopress_page_map($width = "", $height = "", $controls = true) {
 	global $post, $geopress_map_index;
 	// $children = get_children("post_parent=".$post->post_id."&post_type=page&orderby=menu_order ASC post_date&order=ASC");
 	$children = get_children("post_parent=".$post->ID."&orderby=menu_order ASC, post_date&order=ASC");
@@ -337,7 +337,7 @@ function geopress_page_map($height = "", $width = "", $controls = true) {
 // $loop_locations set this to true if you're running this in a Post loop and want a map of the currently visible posts
 // $zoom_level set the map zoom level for the overview. Default is to auto zoom to show all markers.
 // $url is an option URL to a KML or GeoRSS file to include in the map
-function geopress_map($height = "", $width = "", $locations = -1, $unique_id, $loop_locations = false, $zoom_level = -1, $url = "") {
+function geopress_map($width = "", $height = "", $locations = -1, $unique_id, $loop_locations = false, $zoom_level = -1, $url = "") {
 	$plugindir = get_bloginfo('wpurl') . "/wp-content/plugins/geopress";		
   $map_format = get_settings('_geopress_map_format', true);
   $geopress_marker = get_settings('_geopress_marker', true);
@@ -407,7 +407,7 @@ function geopress_map($height = "", $width = "", $locations = -1, $unique_id, $l
 }
  
 $geopress_map_index = 1;
-function geopress_post_map($height = "", $width = "", $controls = true, $overlay = "") {
+function geopress_post_map($width = "", $height = "", $controls = true, $overlay = "") {
     global $post, $geopress_map_index;
 	$geopress_marker = get_settings('_geopress_marker', true);
  
@@ -444,7 +444,7 @@ function geopress_post_map($height = "", $width = "", $controls = true, $overlay
  
 }
  
-function geopress_map_select($height=250, $width=400, $style="float: left;") {   
+function geopress_map_select($width=400, $height=250, $style="float: left;") {   
   $map_format = get_settings('_geopress_map_format', true);
   $map_view_type = get_settings('_geopress_map_type', true);
   $output = '<div id="geo_map" class="mapstraction" style="width: '.$width.'px; height: '.$height.'px;'.$style.'"></div>';
